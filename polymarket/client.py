@@ -14,13 +14,23 @@ GAMMA_API = "https://gamma-api.polymarket.com"
 POLYMARKET_API = "https://polymarket.com/api"
 
 
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept": "application/json",
+}
+
+
 class PolymarketClient:
     def __init__(self, session: aiohttp.ClientSession):
         self.session = session
 
     async def _get(self, url: str, params: dict = None) -> Optional[dict | list]:
         try:
-            async with self.session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=15)) as resp:
+            async with self.session.get(url, params=params, headers=HEADERS, timeout=aiohttp.ClientTimeout(total=15)) as resp:
                 if resp.status == 200:
                     return await resp.json()
                 logger.warning("GET %s returned %s", url, resp.status)
